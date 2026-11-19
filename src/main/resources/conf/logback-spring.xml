@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="logDir" value="./logs"/>
+    <property name="maxHistory" value="7"/>
+    <property name="maxFileSize" value="512MB"/>
+    <property name="pattern" value="%date [%5level] %logger{36} - %msg%n"/>
+    <property name="charset" value="UTF-8"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+    <!-- 输出到文档-->
+    <!--使用est 使用的配置 -->
+    <appender name="OCTOPUS_LOG" class="com.htsc.morphling.logback.OctopusRollingFileAppender">
+        <file>${logDir}/octopus.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${logDir}/%d{yyyy-MM-dd}/meeting-ai-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{56} - %msg%n</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logDir}/%d{yyyy-MM-dd}/error-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${pattern}</pattern>
+        </layout>
+    </appender>
+
+    <!-- level为 DEBUG 日志，时间滚动输出  -->
+    <appender name="debug_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${logDir}/debug.log</file>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset>${charset}</charset> <!-- 设置字符集 -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${logDir}/%d{yyyy-MM-dd}/debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <!-- 此日志文档只记录debug级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="OCTOPUS_LOG"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="uat">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="OCTOPUS_LOG"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="sit">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="OCTOPUS_LOG"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="error"/>
+            <appender-ref ref="OCTOPUS_LOG"/>
+        </root>
+    </springProfile>
+
+
+</configuration>

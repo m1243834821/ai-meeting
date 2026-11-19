@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.htsc.meeting.ai.mapper.MeetingAiWorkflowInfoMapper">
+
+    <resultMap id="meetingAiWorkflowInfoMap" type="com.htsc.meeting.ai.entity.MeetingAiWorkflowInfoModel">
+        <result property="id" column="ID"/>
+        <result property="meetingName" column="MEETING_NAME"/>
+        <result property="scheduleId" column="SCHEDULE_ID"/>
+        <result property="meetingCenterId" column="MEETING_CENTER_ID"/>
+        <result property="videoMeetingNo" column="VIDEO_MEETING_NO"/>
+        <result property="cloudDocId" column="CLOUD_DOC_ID"/>
+        <result property="creatorEmpNo" column="CREATOR_EMP_NO"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, MEETING_NAME, SCHEDULE_ID, MEETING_CENTER_ID, VIDEO_MEETING_NO, CLOUD_DOC_ID, CREATOR_EMP_NO
+    </sql>
+
+    <select id="selectByVideoMeetingNo" resultMap="meetingAiWorkflowInfoMap">
+        select
+        <include refid="Base_Column_List"/>
+        from meeting_ai_workflow_info
+        where VIDEO_MEETING_NO = #{videoMeetingNo}
+        order by ID desc
+        limit 1
+    </select>
+
+    <update id="updateCloudDocIdByScheduleId">
+        update meeting_ai_workflow_info
+        set CLOUD_DOC_ID = #{cloudDocId}
+        where SCHEDULE_ID = #{scheduleId}
+          and VIDEO_MEETING_NO = #{videoMeetingNo}
+          and (CLOUD_DOC_ID is null or CLOUD_DOC_ID = '')
+    </update>
+
+</mapper>

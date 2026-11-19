@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://code.alibabatech.com/schema/dubbo
+     http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 注册中心配置 -->
+    <dubbo:registry id="tencent" address="${spring.dubbo.registry.address}" timeout="${spring.dubbo.registry.timeout}"
+                    check="true"   register="true"/>
+
+    <dubbo:consumer check="false" filter="traceFilter"/>
+
+    <dubbo:reference id="openApiTencentMeetingRecordService" interface="com.htsc.link.calendar.core.openapi.api.OpenApiTencentMeetingRecordService"
+                      version="1.0.0" timeout="${spring.dubbo.registry.timeout}" registry="tencent"/>
+</beans>

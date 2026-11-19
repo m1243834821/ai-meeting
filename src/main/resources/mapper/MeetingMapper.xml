@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.htsc.meeting.ai.mapper.MeetingMapper">
+
+    <insert id="insertMeeting" parameterType="com.htsc.meeting.ai.entity.MeetingInfoModel"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
+        INSERT INTO meeting_ai_workflow_info
+        (MEETING_NAME, TYPE, CREATE_TIME, MEETING_TYPE, CREATOR_EMP_NO, SCHEDULE_ID,
+         MEETING_CENTER_ID, SESSION_ID, MEETING_CONTENT, VIDEO_MEETING_NO, CREATOR_DEPT_CODE,
+         MEETING_ROOM, START_TIME, END_TIME, CREATOR_NAME, CREATOR_DEPT, CREATOR_POSITION)
+        VALUES
+        (#{meetingName}, #{type}, #{createTime}, #{meetingType}, #{creatorEmpNo}, #{scheduleId},
+         #{meetingCenterId}, #{sessionId}, #{meetingContent}, #{videoMeetingNo}, #{creatorDeptCode},
+         #{meetingRoom}, #{startTime}, #{endTime}, #{creatorName}, #{creatorDept}, #{creatorPosition})
+    </insert>
+
+    <insert id="insertParticipants">
+        INSERT INTO meeting_ai_workflow_participant
+        (MEETING_ID, MEETING_CENTER_ID, EMP_NO, NAME, DEPT, DEPT_CODE, POSITION)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.meetingId}, #{item.meetingCenterId}, #{item.empNo}, #{item.name},
+             #{item.dept}, #{item.deptCode}, #{item.position})
+        </foreach>
+    </insert>
+</mapper>
